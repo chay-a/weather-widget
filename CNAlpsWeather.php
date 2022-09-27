@@ -6,6 +6,7 @@
 
 class CNAlpsWeather extends WP_Widget
 {
+    public $pluginName;
 
     public function __construct()
     {
@@ -66,60 +67,27 @@ class CNAlpsWeather extends WP_Widget
         $city     = isset($instance['city']) ? $instance['city'] : '';
         $country     = isset($instance['country']) ? $instance['country'] : '';
 
-
-        $result =  $this->callApi($city, $country);
         // WordPress core before_widget hook (always include )
         echo $before_widget;
 
-        // Display the widget
-        echo '<div class="widget-text wp_widget_plugin_box cnalps-weather-widget">';
-        echo '<p class="weather-title"> La météo à ';
+        echo "
+        <script defer=\"true\">
+        const divPlugin = document.querySelector('.widget_cnalps-weather');
+        if (divPlugin) {
+            fetch('https://www.weatherwp.com/api/common/publicWeatherForLocation.php?city=$city&country=$country&language=french')
+            .then(response => response.json())
+            .then(response =>{
+                let html = '<p class=\"weather-title\"> La météo à $city, $country :</p> <img src=\" '+response.icon+'\"> <p>'+response.temp+' °C</p><p>'+response.description+'</p>';
+                divPlugin.innerHTML = html;
+            });
+        }</script>
+        ";
 
-        // Display text field
-        if ($city) {
-            echo $city;
-        }
-
-        // Display text field
-        if ($country) {
-            echo ', ' . $country;
-        }
-
-        echo ' :</p>';
-
-        echo "<img src=$result->icon>";
-        echo "<p>$result->temp °C</p>";
-        echo "<p>$result->description </p>";
-
-        echo '</div>';
 
         // WordPress core after_widget hook (always include )
         echo $after_widget;
     }
 
-    public function callApi($city, $country)
-    {
-        $cityCall = ucfirst(strtolower($city));
-        $countryCall = ucfirst(strtolower($country));
-
-        $ch = curl_init("https://www.weatherwp.com/api/common/publicWeatherForLocation.php?city=$cityCall&country=$countryCall&language=french");
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- 
-        $result = curl_exec($ch);
-
-
-        if( ! $result)
-        {
-            trigger_error(curl_error($ch));
-        } 
-
-        // Fermeture de la session cURL
-        curl_close($ch);
-
-        return json_decode($result);
-
-    }
 }
 
 // Register the widget
