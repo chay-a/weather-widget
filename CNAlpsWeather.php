@@ -34,14 +34,14 @@ class CNAlpsWeather extends WP_Widget
         <?php // Text Field 
         ?>
         <p>
-            <label for="<?= esc_attr($this->get_field_id('city')); ?>"><?php _e('City:', 'text_domain'); ?></label>
+            <label for="<?= esc_attr($this->get_field_id('city')); ?>"><?php _e('Which city do you want to see the weather:', 'text_domain'); ?></label>
             <input class="widefat" id="<?= esc_attr($this->get_field_id('city')); ?>" name="<?= esc_attr($this->get_field_name('city')); ?>" type="text" value="<?= esc_attr($city); ?>" />
         </p>
 
         <?php // Text Field 
         ?>
         <p>
-            <label for="<?= esc_attr($this->get_field_id('country')); ?>"><?php _e('Country:', 'text_domain'); ?></label>
+            <label for="<?= esc_attr($this->get_field_id('country')); ?>"><?php _e('Which country do you want to see the weather:', 'text_domain'); ?></label>
             <input class="widefat" id="<?= esc_attr($this->get_field_id('country')); ?>" name="<?= esc_attr($this->get_field_name('country')); ?>" type="text" value="<?=  esc_attr($country); ?>" />
         </p>
 
@@ -71,8 +71,8 @@ class CNAlpsWeather extends WP_Widget
         echo $before_widget;
 
         // Display the widget
-        echo '<div class="widget-text wp_widget_plugin_box">';
-        echo '<p> La météo à ';
+        echo '<div class="widget-text wp_widget_plugin_box cnalps-weather-widget">';
+        echo '<p class="weather-title"> La météo à ';
 
         // Display text field
         if ($city) {
