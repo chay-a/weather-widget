@@ -64,8 +64,8 @@ class CNAlpsWeather extends WP_Widget
         extract($args);
 
         // Check the widget options
-        $city     = isset($instance['city']) ? $instance['city'] : '';
-        $country     = isset($instance['country']) ? $instance['country'] : '';
+        $city     = isset($instance['city']) ? $instance['city'] : 'Paris';
+        $country     = isset($instance['country']) ? $instance['country'] : 'France';
 
         // WordPress core before_widget hook (always include )
         echo $before_widget;
@@ -77,7 +77,7 @@ class CNAlpsWeather extends WP_Widget
             fetch('https://www.weatherwp.com/api/common/publicWeatherForLocation.php?city=$city&country=$country&language=french')
             .then(response => response.json())
             .then(response =>{
-                let html = '<p class=\"weather-title\"> La météo à $city, $country :</p> <img src=\" '+response.icon+'\"> <p>'+response.temp+' °C</p><p>'+response.description+'</p>';
+                let html = '<p class=\"weather-title\"> La météo à '+response.status_message+' :</p> <img src=\" '+response.icon+'\"> <p>'+response.temp+' °C</p><p>'+response.description+'</p>';
                 divPlugin.innerHTML = html;
             });
         }</script>
