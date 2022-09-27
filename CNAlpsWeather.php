@@ -42,7 +42,7 @@ class CNAlpsWeather extends WP_Widget
         ?>
         <p>
             <label for="<?= esc_attr($this->get_field_id('country')); ?>"><?php _e('Which country do you want to see the weather:', 'text_domain'); ?></label>
-            <input class="widefat" id="<?= esc_attr($this->get_field_id('country')); ?>" name="<?= esc_attr($this->get_field_name('country')); ?>" type="text" value="<?=  esc_attr($country); ?>" />
+            <input class="widefat" id="<?= esc_attr($this->get_field_id('country')); ?>" name="<?= esc_attr($this->get_field_name('country')); ?>" type="text" value="<?= esc_attr($country); ?>" />
         </p>
 
 <?php }
@@ -60,13 +60,14 @@ class CNAlpsWeather extends WP_Widget
     // Display the widget
     public function widget($args, $instance)
     {
-
         extract($args);
 
         // Check the widget options
         $city     = isset($instance['city']) ? $instance['city'] : '';
         $country     = isset($instance['country']) ? $instance['country'] : '';
 
+
+        $result =  $this->callApi($city, $country);
         // WordPress core before_widget hook (always include )
         echo $before_widget;
 
@@ -84,12 +85,40 @@ class CNAlpsWeather extends WP_Widget
             echo ', ' . $country;
         }
 
-        echo '.</p>';
+        echo ' :</p>';
+
+        echo "<img src=$result->icon>";
+        echo "<p>$result->temp °C</p>";
+        echo "<p>$result->description </p>";
 
         echo '</div>';
 
         // WordPress core after_widget hook (always include )
         echo $after_widget;
+    }
+
+    public function callApi($city, $country)
+    {
+        $cityCall = ucfirst(strtolower($city));
+        $countryCall = ucfirst(strtolower($country));
+
+        $ch = curl_init("https://www.weatherwp.com/api/common/publicWeatherForLocation.php?city=$cityCall&country=$countryCall&language=french");
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+ 
+        $result = curl_exec($ch);
+
+
+        if( ! $result)
+        {
+            trigger_error(curl_error($ch));
+        } 
+
+        // Fermeture de la session cURL
+        curl_close($ch);
+
+        return json_decode($result);
+
     }
 }
 
