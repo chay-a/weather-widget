@@ -76,8 +76,7 @@ class CNAlpsWeather extends WP_Widget
 
         // WordPress core before_widget hook (always include )
         echo $before_widget;
-        echo "<p id='city'>$city</p>";
-        echo "<p id='country'>$country</p>";
+        echo "<div class=\"cnalps-weather-widget\" data-city='$city' data-country='$country'></div>";
         
 
         // WordPress core after_widget hook (always include )
