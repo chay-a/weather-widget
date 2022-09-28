@@ -17,6 +17,13 @@ class CNAlpsWeather extends WP_Widget
                 'customize_selective_refresh' => true,
             )
         );
+        add_action('wp_footer', array($this, 'enqueueAssets'));
+    }
+
+    public function enqueueAssets()
+    {
+        wp_register_script('cnalps-weather', plugins_url('callApi.js', __FILE__));
+        wp_enqueue_script('cnalps-weather');
     }
 
     // The widget form (for the backend )
@@ -69,25 +76,13 @@ class CNAlpsWeather extends WP_Widget
 
         // WordPress core before_widget hook (always include )
         echo $before_widget;
-
-        echo "
-        <script defer=\"true\">
-        const divPlugin = document.querySelector('.widget_cnalps-weather');
-        if (divPlugin) {
-            fetch('https://www.weatherwp.com/api/common/publicWeatherForLocation.php?city=$city&country=$country&language=french')
-            .then(response => response.json())
-            .then(response =>{
-                let html = '<p class=\"weather-title\"> La météo à '+response.status_message+' :</p> <img src=\" '+response.icon+'\"> <p>'+response.temp+' °C</p><p>'+response.description+'</p>';
-                divPlugin.innerHTML = html;
-            });
-        }</script>
-        ";
-
+        echo "<p id='city'>$city</p>";
+        echo "<p id='country'>$country</p>";
+        
 
         // WordPress core after_widget hook (always include )
         echo $after_widget;
     }
-
 }
 
 // Register the widget
